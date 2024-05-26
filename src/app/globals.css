@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.box {
+  --mask: radial-gradient(40.25px at 50% 54px, #000 99%, #0000 101%)
+      calc(50% - 36px) 0/72px 100%,
+    radial-gradient(40.25px at 50% -36px, #0000 99%, #000 101%) 50% 18px/72px
+      100% repeat-x;
+  -webkit-mask: var(--mask);
+  mask: var(--mask);
+}
