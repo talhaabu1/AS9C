@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Fira_Code } from 'next/font/google';
 import ThemeProviders from '@/lib/providers/Providers';
 import './globals.css';
+import { Toaster } from 'sonner';
 
 const firaCode = Fira_Code({ subsets: ['latin'] });
 
@@ -18,7 +19,10 @@ export default function RootLayout({
   return (
     <ThemeProviders>
       <html lang="en">
-        <body className={firaCode.className}>{children}</body>
+        <body className={firaCode.className}>
+          {children}
+          <Toaster position="bottom-right" />
+        </body>
       </html>
     </ThemeProviders>
   );

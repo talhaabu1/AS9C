@@ -45,14 +45,14 @@ const AboutSection = () => {
                 x2="100%"
                 y2="0%"
                 gradientTransform="rotate(45 0.5 0.5)">
-                <stop offset="0%" stop-color="#81C784"></stop>
-                <stop offset="100%" stop-color="#4CAF50"></stop>
+                <stop offset="0%" stopColor="#81C784"></stop>
+                <stop offset="100%" stopColor="#4CAF50"></stop>
               </linearGradient>
             </defs>
             <path
               d="M55.5,61.5Q37,73,37,50Q37,27,55.5,38.5Q74,50,55.5,61.5Z"
               stroke="none"
-              stroke-width="0"
+              strokeWidth="0"
               fill="url(#fill)"></path>
           </svg>
           <div className="flex flex-col items-end px-3">

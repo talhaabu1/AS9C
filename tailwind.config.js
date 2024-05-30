@@ -10,6 +10,9 @@ const config = withMT({
     'path-to-your-node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
+    colors: {
+      bgPrimary: '#f5f5f5',
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -18,6 +21,9 @@ const config = withMT({
       },
       animation: {
         'bounce-slow': 'bounce 4s ease-in-out infinite',
+      },
+      fontFamily: {
+        main: ['Fira Code', 'monospace'],
       },
     },
   },

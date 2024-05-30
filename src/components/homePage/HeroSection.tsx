@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@material-tailwind/react';
-import { NotebookPen, ScanSearch } from 'lucide-react';
+import { Cctv, ScanSearch } from 'lucide-react';
+import Link from 'next/link';
 
 const HeroSection = () => {
   return (
@@ -10,7 +11,8 @@ const HeroSection = () => {
         size={150}
         className="text-green-300  absolute left-40 top-20 hidden lg:block animate-pulse"
       />
-      <NotebookPen
+
+      <Cctv
         size={150}
         className="text-green-300 absolute right-40 bottom-20 hidden lg:block animate-bounce-slow"
       />
@@ -27,10 +29,20 @@ const HeroSection = () => {
           with each other through provided contact information.
         </p>
         <div className="flex flex-wrap justify-center gap-3 md:gap-6">
-          <Button variant="outlined" className="tracking-wide ">
-            Report a Lost Item
-          </Button>
-          <Button className="tracking-wide ">Report a Found Item</Button>
+          <Link href="/report-lost">
+            <Button
+              variant="outlined"
+              className="tracking-wide font-main text-lg">
+              Report Lost Item
+            </Button>
+          </Link>
+          <Link href="/report-found">
+            <Button
+              variant="gradient"
+              className="tracking-wide font-main text-lg">
+              Report Found Item
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

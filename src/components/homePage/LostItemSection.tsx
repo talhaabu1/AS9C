@@ -12,7 +12,7 @@ const LostItemSection = () => {
         </h2>
         <p className="text-[#006400]">Report your lost item every time....</p>
       </div>
-      <div className="container mx-auto grid justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="container mx-auto grid justify-center gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <div className="flex flex-col items-center p-4 border-4 border-dashed border-green-300/40 rounded-lg shadow-xl shadow-green-200/35 transition-shadow ease-in-out hover:shadow-green-200">
           <ScanSearch size={50} className="text-green-500" />
           <h3 className="my-3 text-3xl font-semibold text-green-500">
@@ -164,6 +164,8 @@ const LostItemSection = () => {
           </Button>
         </div>
       </div>
+      <br />
+      <br className="hidden md:block" />
     </section>
   );
 };
