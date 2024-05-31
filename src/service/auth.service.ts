@@ -12,9 +12,20 @@ export const getUserInfo = () => {
 };
 
 export const isLoggedIn = () => {
-  const authToken = localStorage.getItem('token');
-
-  if (authToken) {
+  if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    const authToken = localStorage.getItem('token');
     return !!authToken;
   }
+  return false;
+};
+
+export const logout = () => {
+  localStorage.removeItem('token');
+};
+
+export const getToken = () => {
+  if (typeof window !== 'undefined') {
+    return JSON.parse(localStorage.getItem('token') as string);
+  }
+  return null;
 };

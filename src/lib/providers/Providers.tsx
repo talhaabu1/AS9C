@@ -1,11 +1,16 @@
 'use client';
 
+import { store } from '@/redux/store';
 import { theme } from '@/theme/theme';
 import { ThemeProvider } from '@material-tailwind/react';
-import { ReactNode } from 'react';
+import { Provider } from 'react-redux';
 
-const ThemeProviders = ({ children }: { children: NonNullable<ReactNode> }) => {
-  return <ThemeProvider value={theme}>{children}</ThemeProvider>;
+const ThemeProviders = ({ children }: { children: any }) => {
+  return (
+    <ThemeProvider value={theme}>
+      <Provider store={store}>{children}</Provider>
+    </ThemeProvider>
+  );
 };
 
 export default ThemeProviders;

@@ -1,13 +1,18 @@
 'use client';
 
-import { isLoggedIn } from '@/service/auth.service';
 import { Button } from '@material-tailwind/react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
+const AuthButton = dynamic(() => import('@/components/ui/AuthButton'), {
+  ssr: false,
+});
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="px-4 py-5 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-2xl md:px-24 lg:px-8 bg-[#f5f5f5] rounded-b-lg shadow-lg ">
       <div className="relative flex items-center justify-between">
@@ -41,24 +46,9 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-        {isLoggedIn() ? (
-          <p>Loogin</p>
-        ) : (
-          <ul className="flex items-center hidden space-x-2 lg:flex">
-            <li>
-              <Link href="/login">
-                <Button aria-label="Sign in" variant="outlined">
-                  Sign In
-                </Button>
-              </Link>
-            </li>
-            <li>
-              <Link href="/register">
-                <Button aria-label="Sign up">Sign up</Button>
-              </Link>
-            </li>
-          </ul>
-        )}
+
+        <AuthButton />
+
         <div className="lg:hidden">
           <button
             aria-label="Open Menu"

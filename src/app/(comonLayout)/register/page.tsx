@@ -13,20 +13,30 @@ import { toast } from 'sonner';
 const RegisterPage = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
+  const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const { handleSubmit, register } = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
+    setLoading(true);
     const res = await userRegister(data);
 
     if (res?.success) {
       toast(res?.message, {
         className: 'text-green-500 bg-green-50 text-lg',
       });
+      setLoading(false);
+      reset();
       router.push('login');
     } else {
+      setLoading(false);
       toast(res?.message, { className: 'text-green-500 bg-green-50 text-lg' });
     }
   };
@@ -57,27 +67,50 @@ const RegisterPage = () => {
             onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6">
               <Input
-                {...register('username')}
+                {...register('username', {
+                  required: 'This field is required',
+                  minLength: { message: 'Minima 3 Character', value: 3 },
+                })}
                 size="lg"
                 color="green"
                 label="Username"
                 crossOrigin=""
               />
+              {errors.username && (
+                <p className="text-red-400 mt-1">
+                  {errors.username.message as string}
+                </p>
+              )}
             </div>
 
             <div className="mb-6">
               <Input
-                {...register('email')}
+                {...register('email', {
+                  required: 'This field is required',
+                })}
                 size="lg"
                 color="green"
                 label="Email"
                 type="email"
                 crossOrigin=""
               />
+              {errors.email && (
+                <p className="text-red-400 mt-1">
+                  {errors.email.message as string}
+                </p>
+              )}
             </div>
             <div className="mb-6">
               <Input
-                {...register('password')}
+                {...register('password', {
+                  required: 'This field is required',
+                  pattern: {
+                    value:
+                      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{5,}$/,
+                    message:
+                      'Password must contain at least 5 characters, one number, and one special character',
+                  },
+                })}
                 size="lg"
                 color="green"
                 crossOrigin=""
@@ -93,8 +126,14 @@ const RegisterPage = () => {
                   </i>
                 }
               />
+              {errors.password && (
+                <p className="text-red-400 mt-1">
+                  {errors.password.message as string}
+                </p>
+              )}
             </div>
             <Button
+              loading={isLoading}
               size="md"
               className="mt-6 text-base"
               fullWidth

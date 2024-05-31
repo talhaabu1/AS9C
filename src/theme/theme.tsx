@@ -18,7 +18,9 @@ export const theme: ThemeProps = {
     },
   },
   input: {
-    defaultProps: {},
+    defaultProps: {
+      className: '!font-main !font-semibold',
+    },
   },
   typography: {
     defaultProps: {

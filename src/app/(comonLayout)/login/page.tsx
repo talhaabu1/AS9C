@@ -15,20 +15,30 @@ const LoginPage = () => {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
   const [value, setValue, removeValue] = useLocalStorage('token', '');
-
+  const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { handleSubmit, register } = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
+    setLoading(true);
     const res = await userLogin(data);
     if (res?.success) {
       toast(res?.message, {
         className: 'text-green-500 bg-green-50 text-lg',
       });
+      setLoading(false);
+      reset();
       router.push('/');
+      router.refresh();
       setValue(res?.data?.token);
     } else {
+      setLoading(false);
       toast(res?.message, { className: 'text-green-500 bg-green-50 text-lg' });
     }
   };
@@ -64,16 +74,25 @@ const LoginPage = () => {
             onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6">
               <Input
-                {...register('userNameOrEmail')}
+                {...register('userNameOrEmail', {
+                  required: 'This field is required',
+                })}
                 color="green"
                 size="lg"
                 label="Username Or Email"
                 crossOrigin=""
               />
+              {errors.userNameOrEmail && (
+                <p className="text-red-400 mt-1">
+                  {errors.userNameOrEmail.message as string}
+                </p>
+              )}
             </div>
             <div className="mb-6">
               <Input
-                {...register('password')}
+                {...register('password', {
+                  required: 'This field is required',
+                })}
                 color="green"
                 size="lg"
                 crossOrigin=""
@@ -89,12 +108,18 @@ const LoginPage = () => {
                   </i>
                 }
               />
+              {errors.password && (
+                <p role="alert" className="text-red-400 mt-1">
+                  {errors.password.message as string}
+                </p>
+              )}
             </div>
             <Button
               type="submit"
               size="md"
               className="mt-6 text-base"
-              fullWidth>
+              fullWidth
+              loading={isLoading}>
               sign in
             </Button>
 

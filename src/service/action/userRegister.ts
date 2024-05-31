@@ -9,6 +9,7 @@ const userRegister = async (userData: FieldValues) => {
       'content-type': 'application/json',
     },
     body: JSON.stringify(userData),
+    cache: 'no-store',
   });
   return await res.json();
 };
