@@ -13,15 +13,66 @@ import {
   PopoverContent,
   Textarea,
   Button,
+  Spinner,
 } from '@material-tailwind/react';
 
 import { format } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { useGetAllCategoriesQuery } from '@/redux/categoryApi';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { getUserInfo } from '@/service/auth.service';
+import { imageUpload } from '@/service/action/imageUpload';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useCreateFoundItemMutation } from '@/redux/foundItemApi';
+import { TErrorResponse } from '@/types';
 
 function FoundItemPage() {
-  const [date, setDate] = React.useState();
+  const [date, setDate] = React.useState<Date>();
+  const router = useRouter();
+  const { data, isLoading } = useGetAllCategoriesQuery(undefined);
+  const [crateLostItem, { isLoading: lostItemL }] =
+    useCreateFoundItemMutation();
+  const getUserData = getUserInfo();
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full  h-[67vh]">
+        <Spinner color="green" className="size-16 " />
+      </div>
+    );
+  }
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
+    // const modifyObject = { ...data, ...data.image[0], userId: getUserData.id };
+    const { url } = await imageUpload(data.image[0]);
+
+    const modifyObject = { ...data, image: url, userId: getUserData.id };
+
+    const { data: res, error } = await crateLostItem(modifyObject);
+
+    if (res?.success) {
+      toast(res?.message, {
+        className: 'text-green-500 bg-green-50 text-lg',
+      });
+      reset();
+      router.refresh();
+    } else {
+      toast((error as TErrorResponse)?.data?.message, {
+        className: 'text-green-500 bg-green-50 text-lg font-main',
+      });
+    }
+  };
 
   return (
     <section className="px-8 py-20 container mx-auto">
@@ -31,7 +82,7 @@ function FoundItemPage() {
       <Typography variant="small" className="text-[#006400] font-normal mt-1">
         Found Item your information below.
       </Typography>
-      <form className="flex flex-col mt-8">
+      <form className="flex flex-col mt-8" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-6 flex flex-col items-end gap-4 md:flex-row">
           <div className="w-full">
             <Typography
@@ -41,6 +92,12 @@ function FoundItemPage() {
               Item Category
             </Typography>
             <Select
+              {...register('categoryId', {
+                required: 'This field is required',
+              })}
+              onChange={(value) => {
+                setValue('categoryId', value);
+              }}
               size="lg"
               defaultValue="sle"
               labelProps={{
@@ -52,12 +109,17 @@ function FoundItemPage() {
               }}
               className="w-full text-green-500 placeholder:opacity-100 !border-2 !border-green-500   focus:shadow-lg focus:shadow-green-200/35 font-semibold"
               color="green">
-              <Option>MOBILE</Option>
-              <Option>WATCH</Option>
-              <Option>WALLET</Option>
-              <Option>KEY</Option>
-              <Option>MONEY</Option>
+              {data.data.map((item: any) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
+            {errors.categoryId && (
+              <p className="text-red-400 mt-1">
+                {errors.categoryId.message as string}
+              </p>
+            )}
           </div>
           <div className="w-full">
             <Typography
@@ -67,6 +129,7 @@ function FoundItemPage() {
               Location
             </Typography>
             <Input
+              {...register('location', { required: 'This field is required' })}
               crossOrigin=""
               size="lg"
               labelProps={{
@@ -75,17 +138,25 @@ function FoundItemPage() {
               className="w-full text-green-500 placeholder:opacity-100 !border-2 !border-green-500   focus:shadow-lg focus:shadow-green-200/35 font-semibold"
               color="green"
             />
+            {errors.location && (
+              <p className="text-red-400 mt-1">
+                {errors.location.message as string}
+              </p>
+            )}
           </div>
           <div className="w-full">
             <Typography
               variant="small"
               color="green"
               className="mb-2 font-medium text-lg">
-              Date
+              Found Date
             </Typography>
             <Popover placement="bottom">
               <PopoverHandler>
                 <Input
+                  {...register('foundDate', {
+                    required: 'This field is required',
+                  })}
                   crossOrigin=""
                   size="lg"
                   onChange={() => null}
@@ -100,7 +171,10 @@ function FoundItemPage() {
                 <DayPicker
                   mode="single"
                   selected={date}
-                  onSelect={setDate as any}
+                  onSelect={(date) => {
+                    setDate(date);
+                    setValue('foundDate', date);
+                  }}
                   showOutsideDays
                   className="border-0 font-main"
                   classNames={{
@@ -144,6 +218,11 @@ function FoundItemPage() {
                 />
               </PopoverContent>
             </Popover>
+            {errors.foundDate && (
+              <p className="text-red-400 mt-1">
+                {errors.foundDate.message as string}
+              </p>
+            )}
           </div>
         </div>
         <div className="mb-6 flex flex-col gap-4 md:flex-row">
@@ -155,6 +234,14 @@ function FoundItemPage() {
               Contact Number
             </Typography>
             <Input
+              {...register('number', {
+                required: 'This field is required',
+                pattern: {
+                  value: /^01\d{9}$/,
+                  message:
+                    'Phone number must start with "01" and be 11 digits long',
+                },
+              })}
               type="tel"
               crossOrigin=""
               size="lg"
@@ -163,6 +250,11 @@ function FoundItemPage() {
               }}
               className="w-full text-green-500 placeholder:opacity-100 !border-2 !border-green-500   focus:shadow-lg focus:shadow-green-200/35 font-semibold"
             />
+            {errors.number && (
+              <p className="text-red-400 mt-1">
+                {errors.number.message as string}
+              </p>
+            )}
           </div>
           <div className="w-full">
             <Typography
@@ -188,8 +280,18 @@ function FoundItemPage() {
                 />
               </svg>
               <p className=" text-green-500 font-medium ">Image</p>
-              <input id="dropzone-file" type="file" className="hidden" />
+              <input
+                {...register('image', { required: 'This field is required' })}
+                id="dropzone-file"
+                type="file"
+                className="hidden"
+              />
             </label>
+            {errors.image && (
+              <p className="text-red-400 mt-1">
+                {errors.image.message as string}
+              </p>
+            )}
           </div>
         </div>
         <div className="mb-6 flex flex-col gap-4 md:flex-row">
@@ -201,16 +303,29 @@ function FoundItemPage() {
               Description
             </Typography>
             <Textarea
+              {...register('description', {
+                required: 'This field is required',
+              })}
               labelProps={{
                 className: 'hidden',
               }}
               label="Message"
               className="w-full text-green-500 placeholder:opacity-100 !border-2 !border-green-500   focus:shadow-lg focus:shadow-green-200/35 font-semibold"
             />
+            {errors.description && (
+              <p className="text-red-400 mt-1">
+                {errors.description.message as string}
+              </p>
+            )}
           </div>
         </div>
         <div className="flex justify-end mb-3">
-          <Button className="font-semibold font-main">Submit</Button>
+          <Button
+            loading={lostItemL}
+            className="font-semibold font-main"
+            type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </section>

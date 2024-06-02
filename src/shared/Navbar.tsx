@@ -47,7 +47,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <AuthButton />
+        <AuthButton design1="hidden lg:flex" design2="hidden lg:flex" />
 
         <div className="lg:hidden">
           <button
@@ -127,23 +127,7 @@ const Navbar = () => {
                       </Link>
                     </li>
 
-                    <li>
-                      <Link href="/login">
-                        <Button
-                          aria-label="Sign in"
-                          variant="outlined"
-                          fullWidth>
-                          Sign In
-                        </Button>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/register">
-                        <Button aria-label="Sign up" fullWidth>
-                          Sign up
-                        </Button>
-                      </Link>
-                    </li>
+                    <AuthButton design2="justify-center" />
                   </ul>
                 </nav>
               </div>

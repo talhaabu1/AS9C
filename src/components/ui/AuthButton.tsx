@@ -13,7 +13,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-const AuthButton = () => {
+const AuthButton = ({
+  design1,
+  design2,
+}: {
+  design1?: string;
+  design2?: string;
+}) => {
   const router = useRouter();
   const handelLogout = () => {
     logout();
@@ -27,7 +33,7 @@ const AuthButton = () => {
             <Avatar
               variant="circular"
               alt="tania andrew"
-              className="cursor-pointer"
+              className={`cursor-pointer ring-2 ring-green-300 ring-offset-2 ${design1}`}
               src="https://w0.peakpx.com/wallpaper/107/883/HD-wallpaper-joker-smoking-bad-boy-jacqueline-phoenix-joker-art-thumbnail.jpg"
             />
           </MenuHandler>
@@ -120,7 +126,7 @@ const AuthButton = () => {
           </MenuList>
         </Menu>
       ) : (
-        <ul className="flex items-center hidden space-x-2 lg:flex">
+        <ul className={`flex items-center  space-x-2 ${design2}`}>
           <li>
             <Link href="/login">
               <Button aria-label="Sign in" variant="outlined">

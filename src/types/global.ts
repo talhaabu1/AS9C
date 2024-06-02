@@ -3,3 +3,7 @@ export type TRegisterData = {
   email: string;
   password: string;
 };
+
+export type TErrorResponse = {
+  data: { message: string };
+};
